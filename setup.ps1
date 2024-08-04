@@ -15,18 +15,17 @@ class InstallRequired {
   }
   
   [void] Applications([string[]]$applications) {
-    foreach($id in $frameworks.Keys) {
-			if (!(Get-Command $id -ErrorAction SilentlyContinue)) {
-				winget install --id $applications[$id] -e --source winget -s user
-			}
-    }
-  }
-  
+		foreach($id in $frameworks.Keys) {
+		if (!(Get-Command $id -ErrorAction SilentlyContinue)) {
+			winget install --id $applications[$id] -e --source winget -s user
+		}
+		}
+	}
 }
 
 $install = [InstallRequired]::new()
 
-$modules = @(
+$modules = @ (
 	"Terminal-Icons",
 	"PSReadLine",
 	"posh-git"
