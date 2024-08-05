@@ -7,21 +7,20 @@ Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
 
 class InstallRequired {
 
-  [void] Modules([string[]]$modules) {
+	[void] Modules([string[]]$modules) {
 		Set-PSRepository -Name 'PSGallery' -InstallationPolicy Trusted
-		foreach($module in $modules) {
-			Install-Module -Name $module -Force -Scope CurrentUser
-		}
-  }
+			foreach($module in $modules) {
+				Install-Module -Name $module -Force -Scope CurrentUser
+			}
+	}
   
-  [void] Applications([string[]]$applications) {
+	[void] Applications([hashtable]$applications) {
 		foreach($id in $applications.Keys) {
 			if (!(Get-Command $id -ErrorAction SilentlyContinue)) {
-			winget install --id $applications[$id] -e --source winget -s user
+				winget install --id $applications[$id] -e --source winget -s user
 			}
 		}
 	}
-	
 }
 
 $install = [InstallRequired]::new()
@@ -33,10 +32,10 @@ $mdls = @ (
 )
 
 $apps = @ {
-  "git" = "Git.Git",
-  "gh" = "GitHub.cli",
-  "code" = "Microsoft.VisualStudioCode",
-  "oh-my-posh" = "JanDeDobbeleer.OhMyPosh"
+	"git" = "Git.Git",
+	"gh" = "GitHub.cli",
+	"code" = "Microsoft.VisualStudioCode",
+	"oh-my-posh" = "JanDeDobbeleer.OhMyPosh"
 }
 
 $install.Modules($mdls)
@@ -47,7 +46,7 @@ oh-my-posh font install meslo
 
 # Create a "Current User, Current Host" profile if it does not exist
 if (!(Test-Path -Path $PROFILE)) {
-  New-Item -ItemType File -Path $PROFILE -Force
+	New-Item -ItemType File -Path $PROFILE -Force
 }
 
 # Write the profile script into $PROFILE
