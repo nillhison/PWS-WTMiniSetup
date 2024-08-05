@@ -15,31 +15,32 @@ class InstallRequired {
   }
   
   [void] Applications([string[]]$applications) {
-		foreach($id in $frameworks.Keys) {
-		if (!(Get-Command $id -ErrorAction SilentlyContinue)) {
+		foreach($id in $applications.Keys) {
+			if (!(Get-Command $id -ErrorAction SilentlyContinue)) {
 			winget install --id $applications[$id] -e --source winget -s user
-		}
+			}
 		}
 	}
+	
 }
 
 $install = [InstallRequired]::new()
 
-$modules = @ (
+$mdls = @ (
 	"Terminal-Icons",
 	"PSReadLine",
 	"posh-git"
 )
 
-$applications = @ {
+$apps = @ {
   "git" = "Git.Git",
   "gh" = "GitHub.cli",
   "code" = "Microsoft.VisualStudioCode",
   "oh-my-posh" = "JanDeDobbeleer.OhMyPosh"
 }
 
-$install.Modules($modules)
-$install.Applications($applications)
+$install.Modules($mdls)
+$install.Applications($apps)
 
 $env:Path += ";APPDATA\Local\Programs\oh-my-posh\bin"
 oh-my-posh font install meslo
