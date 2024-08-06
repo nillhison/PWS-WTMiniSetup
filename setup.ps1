@@ -10,11 +10,13 @@ class AppInfo {
     [string]$id
     [string]$exe
     [string]$name
+    [string]$scope
 
-    AppInfo([string]$givenId, [string]$givenExe, [string]$givenName) {
-        $this.id = $givenId
-        $this.exe = $givenExe
-        $this.name = $givenName
+    AppInfo([string]$appId, [string]$appExe, [string]$appName, [string]$appScope) {
+        $this.id = $appId
+        $this.exe = $appExe
+        $this.name = $appName
+        $this.scope = $appScope
     }
 
     [string] Exe() {
@@ -28,8 +30,13 @@ class AppInfo {
     [string] Name() {
         return $this.name
     }
+    
+    [string] Scope() {
+      return $this.scope
+    }
 
 }
+
 class InstallRequired {
 
     [void] Modules([string[]]$modules) {
@@ -42,7 +49,7 @@ class InstallRequired {
     [void] Applications([AppInfo[]]$applications) {
         foreach($application in $applications) {
             if (!(Get-Command $application.Exe -ErrorAction SilentlyContinue)) {
-                winget install --id $applications.Id -e --source winget -scope user
+                winget install --id $application.Id -e --source winget -scope $application.Scope
             }
         }
     }
@@ -58,10 +65,10 @@ $mdls = @(
 )
 
 $apps = @(
-    [AppInfo]::new('git', 'Git.Git', 'Git'),
-    [AppInfo]::new('gh', 'GitHub.cli', 'GitHub CLI')
-    [AppInfo]::new('code', 'Microsoft.VisualStudioCode', 'Microsoft Visual Studio Code')
-    [AppInfo]::new('oh-my-posh', 'JanDeDobbeleer.OhMyPosh', 'Oh My Posh')
+    [AppInfo]::new('git', 'Git.Git', 'Git', 'machine'),
+    [AppInfo]::new('gh', 'GitHub.cli', 'GitHub CLI' 'machine')
+    [AppInfo]::new('code', 'Microsoft.VisualStudioCode', 'Microsoft Visual Studio Code', 'user')
+    [AppInfo]::new('oh-my-posh', 'JanDeDobbeleer.OhMyPosh', 'Oh My Posh', 'user')
 )
 
 
