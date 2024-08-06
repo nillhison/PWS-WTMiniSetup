@@ -63,7 +63,7 @@ class InstallRequired {
                     Write-Error "Failed to install application. Error: $_"
                 }
             } else {
-                Write-Host "Application $applicatio.Name is already installed"
+                Write-Host "Application $application.Name is already installed"
             }
         }
     }
@@ -80,7 +80,7 @@ $mdls = @(
 
 $apps = @(
     [AppInfo]::new('git', 'Git.Git', 'Git', 'machine'),
-    [AppInfo]::new('gh', 'GitHub.cli', 'GitHub CLI' 'machine'),
+    [AppInfo]::new('gh', 'GitHub.cli', 'GitHub CLI', 'machine'),
     [AppInfo]::new('code', 'Microsoft.VisualStudioCode', 'Microsoft Visual Studio Code', 'user'),
     [AppInfo]::new('oh-my-posh', 'JanDeDobbeleer.OhMyPosh', 'Oh My Posh', 'user')
 )
