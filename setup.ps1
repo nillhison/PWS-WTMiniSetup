@@ -56,7 +56,7 @@ class InstallRequired {
 
     [void] Applications([AppInfo[]]$applications) {
         foreach($application in $applications) {
-            if (-not (Get-WmiObject -Class Win32_Product | Where-Object { $_.Name -eq $application.Name } {
+            if (-not (Get-WmiObject -Class Win32_Product | Where-Object { $_.Name -eq $application.Name })) {
                 try {
                     winget install --id $application.Id -e --source winget -scope $application.Scope
                 } catch {
@@ -80,8 +80,8 @@ $mdls = @(
 
 $apps = @(
     [AppInfo]::new('git', 'Git.Git', 'Git', 'machine'),
-    [AppInfo]::new('gh', 'GitHub.cli', 'GitHub CLI' 'machine')
-    [AppInfo]::new('code', 'Microsoft.VisualStudioCode', 'Microsoft Visual Studio Code', 'user')
+    [AppInfo]::new('gh', 'GitHub.cli', 'GitHub CLI' 'machine'),
+    [AppInfo]::new('code', 'Microsoft.VisualStudioCode', 'Microsoft Visual Studio Code', 'user'),
     [AppInfo]::new('oh-my-posh', 'JanDeDobbeleer.OhMyPosh', 'Oh My Posh', 'user')
 )
 
