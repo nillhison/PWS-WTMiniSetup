@@ -5,7 +5,33 @@
 # Set the execution policy to RemoteSigned in order to perform the setup
 Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
 
+class AppInfo {
+
+    [string]$id
+    [string]$exe
+    [string]$name
+
+    AppInfo([string]$givenId, [string]$givenExe, [string]$givenName) {
+        $this.id = $givenId
+        $this.exe = $givenExe
+        $this.name = $givenName
+    }
+
+    [string] Exe() {
+        return $this.exe
+    }
+
+    [string] Id() {
+        return $this.id
+    }
+
+    [string] Name() {
+        return $this.name
+    }
+
+}
 class InstallRequired {
+
     [void] Modules([string[]]$modules) {
         Set-PSRepository -Name 'PSGallery' -InstallationPolicy Trusted
         foreach($module in $modules) {
@@ -13,29 +39,31 @@ class InstallRequired {
         }
     }
 
-    [void] Applications([hashtable]$applications) {
-        foreach($id in $applications.Keys) {
-            if (!(Get-Command $id -ErrorAction SilentlyContinue)) {
-                winget install --id $applications[$id] -e --source winget -scope user
+    [void] Applications([AppInfo[]]$applications) {
+        foreach($application in $applications) {
+            if (!(Get-Command $application.Exe -ErrorAction SilentlyContinue)) {
+                winget install --id $applications.Id -e --source winget -scope user
             }
         }
     }
+
 }
 
 $install = [InstallRequired]::new()
 
-$mdls = @ (
+$mdls = @(
     "Terminal-Icons",
     "PSReadLine",
     "posh-git"
 )
 
-$apps = @ {
-    "git" = "Git.Git",
-    "gh" = "GitHub.cli",
-    "code" = "Microsoft.VisualStudioCode",
-    "oh-my-posh" = "JanDeDobbeleer.OhMyPosh"
-}
+$apps = @(
+    [AppInfo]::new('git', 'Git.Git', 'Git'),
+    [AppInfo]::new('gh', 'GitHub.cli', 'GitHub CLI')
+    [AppInfo]::new('code', 'Microsoft.VisualStudioCode', 'Microsoft Visual Studio Code')
+    [AppInfo]::new('oh-my-posh', 'JanDeDobbeleer.OhMyPosh', 'Oh My Posh')
+)
+
 
 $install.Modules($mdls)
 $install.Applications($apps)
@@ -53,11 +81,3 @@ Copy-Item profile.ps1 -Destination $PROFILE
 
 # Reloading the profile
 . $PROFILE
-
-###########
-
-#######
-
-###
-
-####
