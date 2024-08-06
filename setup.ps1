@@ -42,30 +42,28 @@ class InstallRequired {
     [void] Modules([string[]]$modules) {
         Set-PSRepository -Name 'PSGallery' -InstallationPolicy Trusted
         foreach($module in $modules) {
-        		if (-not (Get-Module -ListAvailable -Name $module)) {
-        			try {
-								Install-Module -Name $module -Force -Scope CurrentUser
-							} catch {
-									Write-Error "Failed to install module $module. Error: $_"
-							}
-						} else {
-						  	Write-Host "Module $module is already installed"
-						}
+            if (-not (Get-Module -ListAvailable -Name $module)) {
+                try {
+                    Install-Module -Name $module -Force -Scope CurrentUser
+                } catch {
+                    Write-Error "Failed to install module $module. Error: $_"
+                }
+            } else {
+                Write-Host "Module $module is already installed"
+            }
         }
     }
 
     [void] Applications([AppInfo[]]$applications) {
         foreach($application in $applications) {
-            if (-not (Get-WmiObject -Class Win32_Product | Where-Object {
-              $_.Name -eq $application.Name
-            } {
-            		try {
-            			winget install --id $application.Id -e --source winget -scope $application.Scope
-            		} catch {
-            		  	Write-Error "Failed to install application. Error: $_"
-            		}
+            if (-not (Get-WmiObject -Class Win32_Product | Where-Object { $_.Name -eq $application.Name } {
+                try {
+                    winget install --id $application.Id -e --source winget -scope $application.Scope
+                } catch {
+                    Write-Error "Failed to install application. Error: $_"
+                }
             } else {
-              	Write-Host "Application $applicatio.Name is already installed"
+                Write-Host "Application $applicatio.Name is already installed"
             }
         }
     }
