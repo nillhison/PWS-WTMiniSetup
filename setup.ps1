@@ -6,64 +6,49 @@
 Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
 
 class AppInfo {
-
-    [string]$id
-    [string]$exe
-    [string]$name
-    [string]$scope
+    
+    $info = [PSCustomObject]@{}
 
     AppInfo([string]$appId, [string]$appExe, [string]$appName, [string]$appScope) {
-        $this.id = $appId
-        $this.exe = $appExe
-        $this.name = $appName
-        $this.scope = $appScope
+        $info.Id = $appId
+        $info.Exe = $appExe
+        $info.Name = $appName
+        $info.Scope = $appScope
     }
 
-    [string] Exe() {
-        return $this.exe
-    }
-
-    [string] Id() {
-        return $this.id
-    }
-
-    [string] Name() {
-        return $this.name
+    [PSCustomObject] Info() {
+        return $info
     }
     
-    [string] Scope() {
-      return $this.scope
-    }
-
 }
 
 class InstallRequired {
 
-    [void] Modules([string[]]$modules) {
+    [void] Modules([string[]]$mdls) {
         Set-PSRepository -Name 'PSGallery' -InstallationPolicy Trusted
-        foreach($module in $modules) {
-            if (-not (Get-Module -ListAvailable -Name $module)) {
+        foreach($mdl in $mdlss) {
+            if (-not (Get-Module -ListAvailable -Name $mdl)) {
                 try {
-                    Install-Module -Name $module -Force -Scope CurrentUser
+                    Install-Module -Name $mdl -Force -Scope CurrentUser
                 } catch {
-                    Write-Error "Failed to install module $module. Error: $_"
+                    Write-Error "Failed to install module $mdl. Error: $_"
                 }
             } else {
-                Write-Host "Module $module is already installed"
+                Write-Host "Module $mdl is already installed"
             }
         }
     }
 
-    [void] Applications([AppInfo[]]$applications) {
-        foreach($application in $applications) {
-            if (-not (Get-WmiObject -Class Win32_Product | Where-Object { $_.Name -eq $application.Name })) {
+    [void] Applications([AppInfo[]]$apps) {
+        foreach($app in $apps) {
+            if (-not (Get-WmiObject -Class Win32_Product | Where-Object { $_.Name -eq $app.Info().Name })) {
                 try {
-                    winget install --id $application.Id -e --source winget -scope $application.Scope
+                    winget install --id $app.Info().Id -e --source winget -scope $app.Info().Scope
                 } catch {
-                    Write-Error "Failed to install application. Error: $_"
+                    Write-Error "Failed to install application $app.Info().Name. Error: $_"
                 }
             } else {
-                Write-Host "Application $application.Name is already installed"
+                Write-Host "Application $app.Info().Name is already installed"
             }
         }
     }
@@ -72,13 +57,13 @@ class InstallRequired {
 
 $install = [InstallRequired]::new()
 
-$mdls = @(
+$modules = @(
     "Terminal-Icons",
     "PSReadLine",
     "posh-git"
 )
 
-$apps = @(
+$applicatiobs = @(
     [AppInfo]::new('git', 'Git.Git', 'Git', 'machine'),
     [AppInfo]::new('gh', 'GitHub.cli', 'GitHub CLI', 'machine'),
     [AppInfo]::new('code', 'Microsoft.VisualStudioCode', 'Microsoft Visual Studio Code', 'user'),
@@ -86,8 +71,8 @@ $apps = @(
 )
 
 
-$install.Modules($mdls)
-$install.Applications($apps)
+$install.Modules($modules)
+$install.Applications($applications)
 
 $env:Path += ";APPDATA\Local\Programs\oh-my-posh\bin"
 oh-my-posh font install meslo
