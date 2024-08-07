@@ -63,7 +63,7 @@ $modules = @(
     "posh-git"
 )
 
-$applicatiobs = @(
+$applications = @(
     [AppInfo]::new('git', 'Git.Git', 'Git', 'machine'),
     [AppInfo]::new('gh', 'GitHub.cli', 'GitHub CLI', 'machine'),
     [AppInfo]::new('code', 'Microsoft.VisualStudioCode', 'Microsoft Visual Studio Code', 'user'),
