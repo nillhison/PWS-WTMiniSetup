@@ -10,7 +10,7 @@ Projected to perform a fast and basic minisetup in different Windows Terminal ho
     - Posh Git
     - PSReadLine
     - Terminal Icons
-    - Additional items
+- Additional items
     - Meslo Nerd Fonts
 
 # Warning
