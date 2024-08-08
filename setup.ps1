@@ -31,7 +31,7 @@ class InstallRequired {
         # Trust the repository's authors
         Set-PSRepository -Name 'PSGallery' -InstallationPolicy Trusted
         
-        foreach($mdl in $mdlss) {
+        foreach($mdl in $mdls) {
             
             # Install the module, if not yet installed
             if (-not (Get-Module -ListAvailable -Name $mdl)) {
@@ -54,7 +54,7 @@ class InstallRequired {
             
             # Look up for the application in the system
             # Install it, if not yet installed
-            if (-not (Get-WmiObject -Class Win32_Product | Where-Object { $_.Name -eq $app.Info().Name })) {
+            if (-not (Get-CimInstance -ClassName Win32_Product | Where-Object { $_.Name -eq $app.Info().Name })) {
                 try {
                     winget install --id $app.Info().Id -e --source winget --scope $app.Info().Scope
                 } catch {
@@ -90,7 +90,7 @@ class InstallRequired {
         
         # If the application was already installed, check whether it's in the PATH
         # Also applied if this instalation itself has just added the .exe to the PATH
-        if(-not (Test-Path -Path $exeDirectory)) {
+        if($env:Path -notlike "*$exeDirectory*") {
             # Use .NET context to append the .exe directory to the PATH
             [System.Environment]::SetEnvironmentVariable("Path", $env:Path + ";$exeDirectory", [System.EnvironmentVariableTarget]::$dotnetScope)
         }
@@ -112,7 +112,7 @@ $modules = @(
 $applications = @(
     [AppInfo]::new('Git.Git', 'git', 'Git', 'machine'),
     [AppInfo]::new('GitHub.cli', 'gh', 'GitHub CLI', 'machine'),
-    [AppInfo]::new('Microsoft.VisualStudioCode', 'code' 'Microsoft Visual Studio Code', 'user'),
+    [AppInfo]::new('Microsoft.VisualStudioCode', 'code', 'Microsoft Visual Studio Code', 'user'),
     [AppInfo]::new('JanDeDobbeleer.OhMyPosh', 'oh-my-posh', 'Oh My Posh', 'user')
 )
 
