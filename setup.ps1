@@ -47,8 +47,29 @@ class InstallRequired {
                 } catch {
                     Write-Error "Failed to install application $app.Info().Name. Error: $_"
                 }
+                $this.SetAppEnv($app.Info().Exe, $app.Info().Scope)
             } else {
                 Write-Host "Application $app.Info().Name is already installed"
+                if() {
+                    $this.SetAppEnv($app.Info().Exe, $app.Info().Scope)
+                }
+            }
+        }
+    }
+    
+    [void] SetAppEnv([string]$exe, [string]$scope) {
+        
+        $exePath
+        $exeDirectory = $exePath.DirectoryName
+        
+        switch($scope) {
+            'machine' {
+                $exePath = Get-ChildItem -Path "C:\Program Files", "C:\Program Files (x86)" -Recurse -ErrorAction SilentlyContinue | Where-Object { $_.Name -eq $exe }
+                [System.Environment]::SetEnvironmentVariable("Path", $env:Path + ";$exeDirectory", [System.EnvironmentVariableTarget]::Machine)
+            }
+            'user' {
+                $exePath = Get-ChildItem -Path "APPDATA\Local\Programs" -Recurse -ErrorAction SilentlyContinue | Where-Object { $_.Name -eq $exe }
+                [System.Environment]::SetEnvironmentVariable("Path", $env:Path + ";$exeDirectory", [System.EnvironmentVariableTarget]::CurrentUser)
             }
         }
     }
