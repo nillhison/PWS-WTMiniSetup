@@ -13,5 +13,5 @@ Projected to perform a fast and basic minisetup in different Windows Terminal ho
 - Aditional items
     - Meslo Nerd Fonts
 
-# [ ⚠️ **WARNING** ]
+# ⚠️ WARNING
 This project is in development and the main branch does not yet contain a minimal runnable version. Don try to run this setup!
