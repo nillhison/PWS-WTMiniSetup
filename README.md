@@ -14,4 +14,4 @@ Projected to perform a fast and basic minisetup in different Windows Terminal ho
     - Meslo Nerd Fonts
 
 # Warning
-This project is in development and the main branch does not yet contain a minimal runnable version. Don try to run this setup!
+This project is in development and the main branch does not yet contain a minimal runnable version. Don't try to run this setup!
